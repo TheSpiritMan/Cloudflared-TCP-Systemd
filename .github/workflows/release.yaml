@@ -55,13 +55,18 @@ jobs:
         dpkg-deb --build build/cloudflared-tcp_${VERSION}
         # Moving it to the root so the next step finds it easily
         mv build/cloudflared-tcp_${VERSION}.deb .
+
     - name: Install changelog generator
       run: |
-        gem install github_changelog_generator
+        gem install --user-install github_changelog_generator
+        echo "${HOME}/.gem/ruby/$(ls ~/.gem/ruby)/bin" >> $GITHUB_PATH
 
     - name: Generate changelog
       run: |
-        github_changelog_generator --user TheSpiritMan --project cloudflared-tcp --future-release v${{ env.VERSION }} > CHANGELOG.md
+        github_changelog_generator --user ${{ github.repository_owner }} \
+          --project ${GITHUB_REPOSITORY##*/} \
+          --future-release v${{ env.VERSION }} \
+          > CHANGELOG.md
 
     - name: Upload to GitHub Release
       uses: softprops/action-gh-release@v2

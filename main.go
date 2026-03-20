@@ -54,7 +54,7 @@ func setup() {
 	config := `# Format:
 # <hostname> <local_port>
 
-postgres-db.sandab.me 15432
+postgres-db.example.com 15432
 `
 	writeFileWithSudo(configPath, config)
 	fmt.Println("👉 Config file created")
@@ -191,8 +191,8 @@ Config file:
   Format: <hostname> <local_port>
 
 Example:
-  postgres-db.sandab.me 15432
-  redis-db.sandab.me    6379
+  postgres-db.example.com 15432
+  redis-db.example.com    6379
 `)
 }
 
