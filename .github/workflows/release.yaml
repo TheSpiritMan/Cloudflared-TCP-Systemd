@@ -3,7 +3,7 @@ name: Build & Release .deb
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*.*.*'  # trigger only on tags like v0.1.0
 
 jobs:
   build:
@@ -11,10 +11,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v6
 
     - name: Set up Go
-      uses: actions/setup-go@v4
+      uses: actions/setup-go@v6
       with:
         go-version: '1.21'
 
@@ -22,27 +22,28 @@ jobs:
       run: |
         CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o cloudflared-tcp main.go
 
-    - name: Prepare Debian package structure
+    - name: Set version
+      run: |
+        echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+        echo "VERSION is $VERSION"
+
+    - name: Prepare Debian package
       run: |
         PKG_NAME=cloudflared-tcp
-        VERSION=${GITHUB_REF##*/}      # tag like v0.1.0
-        VERSION=${VERSION#v}            # remove 'v' prefix
-
-        # create folder structure
         mkdir -p build/${PKG_NAME}_${VERSION}/usr/local/bin
         mkdir -p build/${PKG_NAME}_${VERSION}/DEBIAN
 
-        # copy binary
+        # Copy binary
         cp cloudflared-tcp build/${PKG_NAME}_${VERSION}/usr/local/bin/
 
-        # copy control file
+        # Copy control file
         cp deb-package/debian/control build/${PKG_NAME}_${VERSION}/DEBIAN/control
 
-        # copy scripts
+        # Copy maintainer scripts
         cp deb-package/scripts/postinst build/${PKG_NAME}_${VERSION}/DEBIAN/postinst
         cp deb-package/scripts/postrm build/${PKG_NAME}_${VERSION}/DEBIAN/postrm
 
-        # make scripts executable
+        # Make scripts executable
         chmod 755 build/${PKG_NAME}_${VERSION}/DEBIAN/postinst
         chmod 755 build/${PKG_NAME}_${VERSION}/DEBIAN/postrm
 
@@ -52,9 +53,9 @@ jobs:
         mv build/cloudflared-tcp_${VERSION}.deb cloudflared-tcp_${VERSION}.deb
         ls -lh cloudflared-tcp_${VERSION}.deb
 
-    - name: Upload to GitHub Releases
-      uses: softprops/action-gh-release@v1
+    - name: Upload to GitHub Release
+      uses: softprops/action-gh-release@v2
       with:
-        files: cloudflared-tcp_${GITHUB_REF##*/}.deb
+        files: cloudflared-tcp_${VERSION}.deb
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
