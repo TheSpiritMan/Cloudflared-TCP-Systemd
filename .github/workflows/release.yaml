@@ -59,7 +59,7 @@ jobs:
     - name: Install changelog generator
       run: |
         gem install --user-install github_changelog_generator
-        echo "${HOME}/.gem/ruby/$(ls ~/.gem/ruby)/bin" >> $GITHUB_PATH
+        echo "${HOME}/.local/share/gem/ruby/$(ls ~/.local/share/gem/ruby)/bin" >> $GITHUB_PATH
 
     - name: Generate changelog
       run: |
