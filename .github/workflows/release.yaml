@@ -67,13 +67,17 @@ jobs:
           --project ${GITHUB_REPOSITORY##*/} \
           --future-release v${{ env.VERSION }} \
           > CHANGELOG.md
+    - name: Read changelog
+      run: |
+        echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+        cat CHANGELOG.md >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
 
     - name: Upload to GitHub Release
       uses: softprops/action-gh-release@v2
       with:
         # 2. USE EXPRESSION SYNTAX ${{ env.VERSION }}
         files: cloudflared-tcp_${{ env.VERSION }}.deb
-        body: |
-          $(cat CHANGELOG.md)
+        body: ${{ env.CHANGELOG }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
