@@ -8,15 +8,13 @@
 
 ## Installation:
 - We can install using debian file from [Github releases](https://github.com/TheSpiritMan/Cloudflared-TCP/releases).
+- OR
   ```sh
-  sudo apt install jq -y
-  REPO="TheSpiritMan/Cloudflared-TCP"
-  LATEST_URL=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" \
-    | jq -r '.assets[] | select(.name | endswith(".deb")) | .browser_download_url')
-
-  # Download and install
-  curl -L $LATEST_URL -o cloudflared-tcp_latest.deb
-  sudo apt install ./cloudflared-tcp_latest.deb -y
+  curl -sSL https://raw.githubusercontent.com/TheSpiritMan/Cloudflared-TCP/main/install.sh | bash
+  ```
+  OR
+  ```sh
+  wget -qO - https://raw.githubusercontent.com/TheSpiritMan/Cloudflared-TCP/main/install.sh | bash
   ```
 
 - Config can be found in `/etc/cloudflared-tcp.conf`.
