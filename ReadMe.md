@@ -7,10 +7,10 @@
 - Must install `cloudflared` cli in the client system.
 
 ## Installation:
-- We can install using debian file from [Github releases](https://github.com/TheSpiritMan/Cloudflared-TCP-Systemd/releases).
+- We can install using debian file from [Github releases](https://github.com/TheSpiritMan/Cloudflared-TCP/releases).
   ```sh
   sudo apt install jq -y
-  REPO="TheSpiritMan/Cloudflared-TCP-Systemd"
+  REPO="TheSpiritMan/Cloudflared-TCP"
   LATEST_URL=$(curl -s "https://api.github.com/repos/$REPO/releases/latest" \
     | jq -r '.assets[] | select(.name | endswith(".deb")) | .browser_download_url')
 
